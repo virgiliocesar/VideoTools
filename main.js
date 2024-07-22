@@ -4,9 +4,9 @@ const ffmpeg = require("fluent-ffmpeg");
 
 // Especifique os caminhos completos para ffmpeg e ffprobe
 const ffmpegPath =
-  "C:\\Users\\xbacon\\Desktop\\VideoTools\\ffmpeg\\bin\\ffmpeg.exe";
+  ".\\ffmpeg\\bin\\ffmpeg.exe";
 const ffprobePath =
-  "C:\\Users\\xbacon\\Desktop\\VideoTools\\ffmpeg\\bin\\ffprobe.exe";
+  ".\\ffmpeg\\bin\\ffprobe.exe";
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
