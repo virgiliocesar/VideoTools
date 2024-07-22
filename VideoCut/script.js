@@ -32,16 +32,18 @@ ffmpeg.ffprobe(inputVideo, (err, metadata) => {
     ffmpeg(inputVideo)
       .setStartTime(startTime)
       .setDuration(clipDuration)
-      
-    // ajusta a saida do video para 1080x1920 e shorts e tiktok
+      // ajusta a saida do video para 1080x1920 e shorts e tiktok
       .videoFilters([
         {
           filter: "scale",
-          options: "1080:1920",
+          options: {
+            w: -1,
+            h: "min(1920, ih*1080/iw)",
+          },
         },
         {
           filter: "pad",
-          options: "1080:1920:(ow-iw)/2:(oh-ih)/2",
+          options: "1080:1920:(1080-iw)/2:(1920-ih)/2",
         },
       ])
       .output(outputFilePath)
