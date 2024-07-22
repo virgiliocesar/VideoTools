@@ -2,14 +2,18 @@ const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 
 // Especifique os caminhos completos para ffmpeg e ffprobe
-const ffmpegPath ="C:\\Users\\xbacon\\Desktop\\VideoTools\\ffmpeg\\bin\\ffmpeg.exe";
-const ffprobePath = "C:\\Users\\xbacon\\Desktop\\VideoTools\\ffmpeg\\bin\\ffprobe.exe";
+const ffmpegPath =
+  "C:\\Users\\xbacon\\Desktop\\VideoTools\\ffmpeg\\bin\\ffmpeg.exe";
+const ffprobePath =
+  "C:\\Users\\xbacon\\Desktop\\VideoTools\\ffmpeg\\bin\\ffprobe.exe";
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
 // Certifique-se de que o caminho para o arquivo de vídeo está correto
-const inputVideo = "C:\\Users\\xbacon\\Desktop\\VideoTools\\VideoCut\\video.mp4";
-const outputDir = "C:\\Users\\xbacon\\Desktop\\VideoTools\\VideoCut\\ShortsVideo";
+const inputVideo =
+  "C:\\Users\\xbacon\\Desktop\\VideoTools\\VideoCut\\video.mp4";
+const outputDir =
+  "C:\\Users\\xbacon\\Desktop\\VideoTools\\VideoCut\\ShortsVideo";
 const clipDuration = 80; // duração de cada clipe em segundos (ajuste conforme necessário)
 
 ffmpeg.ffprobe(inputVideo, (err, metadata) => {
@@ -28,6 +32,18 @@ ffmpeg.ffprobe(inputVideo, (err, metadata) => {
     ffmpeg(inputVideo)
       .setStartTime(startTime)
       .setDuration(clipDuration)
+      
+    // ajusta a saida do video para 1080x1920 e shorts e tiktok
+      .videoFilters([
+        {
+          filter: "scale",
+          options: "1080:1920",
+        },
+        {
+          filter: "pad",
+          options: "1080:1920:(ow-iw)/2:(oh-ih)/2",
+        },
+      ])
       .output(outputFilePath)
       .on("end", () => {
         console.log(`Clip ${clipIndex} criado: ${outputFilePath}`);
