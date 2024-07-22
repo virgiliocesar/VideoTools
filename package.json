@@ -1,5 +1,5 @@
 {
-  "name": "videotools",
+  "name": "cut video",
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
@@ -7,9 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron ."
   },
-  "author": "",
+  "author": "Virgílio César",
   "license": "ISC",
-  "description": "",
+  "description": "Aplicativo para facilitar corte de videos em varios tamanhos",
   "devDependencies": {
     "electron": "^31.2.1",
     "electron-builder": "^24.13.3"
@@ -18,5 +18,10 @@
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@ffprobe-installer/ffprobe": "^2.1.2",
     "fluent-ffmpeg": "^2.1.3"
+  },
+  "build": {
+    "win": {
+      "icon": "./assets/icon.png"
+    }
   }
 }

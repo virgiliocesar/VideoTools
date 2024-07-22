@@ -20,6 +20,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    icon: path.join(__dirname, './assets/icon.png'),
     webPreferences: {
       preload: path.join(__dirname, "renderer.js"),
       nodeIntegration: true,
