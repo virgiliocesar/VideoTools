@@ -1,12 +1,19 @@
 const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const path = require("path");
 const ffmpeg = require("fluent-ffmpeg");
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path.replace(
+  "app.asar",
+  "app.asar.unpacked"
+);
 
-// Especifique os caminhos completos para ffmpeg e ffprobe
-const ffmpegPath =
-  "C:\\Users\\xbacon\\Desktop\\VideoTools\\ffmpeg\\bin\\ffmpeg.exe";
-const ffprobePath =
-  "C:\\Users\\xbacon\\Desktop\\VideoTools\\ffmpeg\\bin\\ffprobe.exe";
+const ffprobePath = require("@ffprobe-installer/ffprobe").path.replace(
+  "app.asar",
+  "app.asar.unpacked"
+);
+
+// Configure o caminho para ffmpeg e ffprobe se necessário
+// const ffmpegPath = ".\\ffmpeg\\bin\\ffmpeg.exe";
+// const ffprobePath = ".\\ffmpeg\\bin\\ffprobe.exe";
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
@@ -28,6 +35,7 @@ function createWindow() {
 
 app.on("ready", createWindow);
 
+// IPC Handlers
 ipcMain.handle("select-video", async () => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ["openFile"],
@@ -49,7 +57,6 @@ ipcMain.handle(
     return new Promise((resolve, reject) => {
       ffmpeg.ffprobe(inputVideo, (err, metadata) => {
         if (err) {
-          console.error("Erro ao obter metadados do vídeo:", err);
           reject(err);
           return;
         }
@@ -60,7 +67,6 @@ ipcMain.handle(
 
         const processClip = () => {
           if (startTime >= videoDuration) {
-            mainWindow.webContents.send("progress", 100); // Garantir que o progresso finalize em 100%
             resolve();
             return;
           }
@@ -70,33 +76,13 @@ ipcMain.handle(
           ffmpeg(inputVideo)
             .setStartTime(startTime)
             .setDuration(clipDuration)
-            .videoFilters([
-              {
-                filter: "scale",
-                options: {
-                  w: -1,
-                  h: "min(1920, ih*1080/iw)",
-                },
-              },
-              {
-                filter: "pad",
-                options: "1080:1920:(1080-iw)/2:(1920-ih)/2",
-              },
-            ])
             .output(outputFilePath)
             .on("end", () => {
-              console.log(`Clip ${clipIndex} criado: ${outputFilePath}`);
-              const percent = Math.min(
-                Math.round((startTime / videoDuration) * 100),
-                100
-              );
-              mainWindow.webContents.send("progress", percent);
-              startTime += clipDuration;
               clipIndex++;
+              startTime += clipDuration;
               processClip();
             })
             .on("error", (err) => {
-              console.error(`Erro ao criar o clip ${clipIndex}:`, err);
               reject(err);
             })
             .run();
