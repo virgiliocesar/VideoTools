@@ -5,15 +5,12 @@ const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path.replace(
   "app.asar",
   "app.asar.unpacked"
 );
-
 const ffprobePath = require("@ffprobe-installer/ffprobe").path.replace(
   "app.asar",
   "app.asar.unpacked"
 );
 
-// Configure o caminho para ffmpeg e ffprobe se necessário
-// const ffmpegPath = ".\\ffmpeg\\bin\\ffmpeg.exe";
-// const ffprobePath = ".\\ffmpeg\\bin\\ffprobe.exe";
+// Configure o caminho para ffmpeg e ffprobe
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
 
@@ -67,6 +64,7 @@ ipcMain.handle(
 
         const processClip = () => {
           if (startTime >= videoDuration) {
+            mainWindow.webContents.send("progress", 100);
             resolve();
             return;
           }
@@ -80,6 +78,12 @@ ipcMain.handle(
             .on("end", () => {
               clipIndex++;
               startTime += clipDuration;
+              // Calcule a porcentagem do progresso, garantindo que não ultrapasse 100%
+              const percent = Math.min(
+                Math.round((startTime / videoDuration) * 100),
+                100
+              );
+              mainWindow.webContents.send("progress", percent);
               processClip();
             })
             .on("error", (err) => {
