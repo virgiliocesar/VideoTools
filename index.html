@@ -131,6 +131,34 @@
     body.dark-mode #status {
       color: #e0e0e0;
     }
+
+    /* Notificação */
+    #notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #4caf50;
+      color: white;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+      z-index: 1000;
+    }
+
+    #notification button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    /* Modo escuro */
+    body.dark-mode #notification {
+      background-color: #333;
+    }
   </style>
 </head>
 <body>
@@ -150,6 +178,13 @@
     </div>
     <button id="theme-toggle">Modo Escuro</button>
   </div>
+
+  <!-- Notificação -->
+  <div id="notification">
+    Processamento concluído!
+    <button id="notification-close">×</button>
+  </div>
+
   <script src="renderer.js"></script>
 </body>
 </html>
